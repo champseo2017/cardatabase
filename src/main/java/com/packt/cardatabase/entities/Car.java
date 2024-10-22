@@ -25,30 +25,30 @@ public class Car {
       // เพิ่มความสัมพันธ์กับ Owner
     @ManyToOne(fetch = FetchType.LAZY) // หลายรถ มีเจ้าของได้ 1 คน, ดึงข้อมูลเมื่อต้องการ
     @JoinColumn(name = "owner_id") // สร้างคอลัมน์ owner_id เป็น foreign key
-    private Owner owner; // ตัวแปรเก็บข้อมูลเจ้าของรถ
+    private Owner owner_id; // เปลี่ยนชื่อตัวแปรให้ตรงกัน
 
     // Constructor ว่างเปล่า (จำเป็นสำหรับ JPA)
     public Car() {}
 
     // Constructor ที่รับพารามิเตอร์
     public Car(String brand, String model, String color, 
-               String registerNumber, int year, int price, Owner owner) {
+               String registerNumber, int year, int price, Owner owner_id) {
         this.brand = brand;
         this.model = model;
         this.color = color;
         this.registerNumber = registerNumber;
         this.year = year;
         this.price = price;
-        this.owner = owner;  // เพิ่มการกำหนดค่า owner
+        this.owner_id = owner_id; // เพิ่มการกำหนดค่า owner
     }
 
     // เพิ่ม Getter และ Setter สำหรับ owner
-    public Owner getOwner() {
-        return owner;
+    public Owner getOwner_id() {
+        return owner_id;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+     public void setOwner_id(Owner owner_id) {
+        this.owner_id = owner_id;
     }
 
     // Getters และ Setters
