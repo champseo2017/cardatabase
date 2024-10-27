@@ -23,7 +23,7 @@ public class Car {
     private int price;
 
       // เพิ่มความสัมพันธ์กับ Owner
-    @ManyToOne(fetch = FetchType.LAZY) // หลายรถ มีเจ้าของได้ 1 คน, ดึงข้อมูลเมื่อต้องการ
+    @ManyToOne(fetch = FetchType.EAGER) // หลายรถ มีเจ้าของได้ 1 คน, ดึงข้อมูลเมื่อต้องการ
     @JoinColumn(name = "owner_id") // สร้างคอลัมน์ owner_id เป็น foreign key
     private Owner owner_id; // เปลี่ยนชื่อตัวแปรให้ตรงกัน
 

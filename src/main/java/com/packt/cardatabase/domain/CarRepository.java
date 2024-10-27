@@ -1,6 +1,7 @@
 package com.packt.cardatabase.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -8,8 +9,11 @@ import org.springframework.data.repository.CrudRepository;
 import com.packt.cardatabase.entities.Car;  // ควรมีบรรทัดนี้
 
 public interface CarRepository extends CrudRepository<Car, Long> {
+
+     Optional<Car> findByRegisterNumber(String registerNumber);
+
      // ค้นหารถยนต์ตามยี่ห้อ
-    //  List<Car> findByBrand(String brand);
+     List<Car> findByBrand(String brand);
 
      // ค้นหารถยนต์ตามสี
      List<Car> findByColor(String color);
@@ -27,8 +31,8 @@ public interface CarRepository extends CrudRepository<Car, Long> {
     List<Car> findByBrandOrderByYearAsc(String brand);
 
      // ค้นหารถยนต์ตามยี่ห้อโดยใช้ SQL
-    @Query("select c from Car c where c.brand = ?1")
-    List<Car> findByBrand(String brand);
+//     @Query("select c from Car c where c.brand = ?1")
+//     List<Car> findByBrand(String brand);
 
      // ค้นหารถยนต์ที่ยี่ห้อลงท้ายด้วยคำที่กำหนด
      @Query("select c from Car c where c.brand like %?1")
