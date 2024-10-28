@@ -1,57 +1,66 @@
 package com.packt.cardatabase.entities;
 
-// เพิ่ม import สำหรับ annotations ที่ต้องใช้
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 
-@Entity // บอกว่านี่คือคลาสที่ใช้แทนตารางในฐานข้อมูล
+@Entity
 public class Car {
-    @Id // บอกว่านี่คือ primary key
-    @GeneratedValue(strategy=GenerationType.AUTO) // สร้าง ID อัตโนมัติ
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
     private String brand, model, color, registerNumber;
     
-    @Column(name = "production_year")  // เปลี่ยนชื่อคอลัมน์เป็น production_year
+    @Column(name = "production_year")
     private int year;
     
     private int price;
 
-      // เพิ่มความสัมพันธ์กับ Owner
-    @ManyToOne(fetch = FetchType.EAGER) // หลายรถ มีเจ้าของได้ 1 คน, ดึงข้อมูลเมื่อต้องการ
-    @JoinColumn(name = "owner_id") // สร้างคอลัมน์ owner_id เป็น foreign key
-    private Owner owner_id; // เปลี่ยนชื่อตัวแปรให้ตรงกัน
+    // เปลี่ยนจาก ManyToOne เป็น ManyToMany
+    @ManyToMany(mappedBy = "cars", fetch = FetchType.EAGER)
+    private Set<Owner> owners = new HashSet<>();
 
-    // Constructor ว่างเปล่า (จำเป็นสำหรับ JPA)
+    // Constructor ว่างเปล่า
     public Car() {}
 
-    // Constructor ที่รับพารามิเตอร์
+    public void addOwner(Owner owner) {
+        this.owners.add(owner);
+        owner.getCars().add(this);
+    }
+
+    public void removeOwner(Owner owner) {
+        this.owners.remove(owner);
+        owner.getCars().remove(this);
+    }
+
+    // ปรับ Constructor ให้ไม่ต้องรับ owner
     public Car(String brand, String model, String color, 
-               String registerNumber, int year, int price, Owner owner_id) {
+               String registerNumber, int year, int price) {
         this.brand = brand;
         this.model = model;
         this.color = color;
         this.registerNumber = registerNumber;
         this.year = year;
         this.price = price;
-        this.owner_id = owner_id; // เพิ่มการกำหนดค่า owner
     }
 
-    // เพิ่ม Getter และ Setter สำหรับ owner
-    public Owner getOwner_id() {
-        return owner_id;
+    // เปลี่ยน getter/setter สำหรับ owners
+    public Set<Owner> getOwners() {
+        return owners;
     }
 
-     public void setOwner_id(Owner owner_id) {
-        this.owner_id = owner_id;
+    public void setOwners(Set<Owner> owners) {
+        this.owners = owners;
     }
 
-    // Getters และ Setters
+    // Getters และ Setters อื่นๆ คงเดิม
     public long getId() {
         return id;
     }

@@ -1,14 +1,19 @@
 package com.packt.cardatabase.entities;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity // บอกว่าคลาสนี้เป็น Entity ที่จะถูกเก็บในฐานข้อมูล
 public class Owner {
@@ -16,17 +21,39 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.AUTO) // สร้าง ID อัตโนมัติ
     private long ownerid;
     
+    @NotBlank(message = "ต้องระบุชื่อ")
+    @Column(nullable = false)
     private String firstname;
+
+    @NotBlank(message = "ต้องระบุนามสกุล")
+    @Column(nullable = false)
     private String lastname;
 
-    // ความสัมพันธ์แบบ One-to-Many กับ Car
-    // cascade = ALL หมายถึง เมื่อลบ Owner จะลบรถทั้งหมดของเจ้าของคนนั้นด้วย
-    // mappedBy="owner_id" อ้างอิงถึงชื่อฟิลด์ใน Entity Car
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner_id", fetch = FetchType.EAGER)
-    private List<Car> cars;
+     // เปลี่ยนเป็น EAGER loading และเพิ่ม fetch ให้ชัดเจน
+    @ManyToMany(
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+        fetch = FetchType.EAGER
+    )
+    @JoinTable(
+        name = "owner_car", 
+        joinColumns = @JoinColumn(name = "owner_id"),
+        inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private Set<Car> cars = new HashSet<>();
 
     // Constructor ว่างเปล่า (จำเป็นสำหรับ JPA)
     public Owner() {}
+
+    // เพิ่มเมธอดจัดการความสัมพันธ์
+    public void addCar(Car car) {
+        this.cars.add(car); // เพิ่มรถเข้าไปในรายการรถของเจ้าของ
+        car.getOwners().add(this); // เพิ่มเจ้าของ (ตัวเอง) เข้าไปในรายการเจ้าของของรถ
+    }
+
+    public void removeCar(Car car) {
+        this.cars.remove(car);
+        car.getOwners().remove(this);
+    }
 
     // Constructor สำหรับสร้าง Owner ใหม่
     public Owner(String firstname, String lastname) {
@@ -59,11 +86,11 @@ public class Owner {
         this.lastname = lastname;
     }
 
-    public List<Car> getCars() {
+    public Set<Car> getCars() {
         return cars;
     }
 
-    public void setCars(List<Car> cars) {
+    public void setCars(Set<Car> cars) {
         this.cars = cars;
     }
 
