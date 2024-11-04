@@ -3,6 +3,9 @@ package com.packt.cardatabase.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // ใช้สำหรับละเว้นฟิลด์ใน serialize
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // ใช้สำหรับละเว้น properties ที่ระบุ
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +19,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity // บอกว่าคลาสนี้เป็น Entity ที่จะถูกเก็บในฐานข้อมูล
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // ละเว้นฟิลด์ที่สร้างโดย Hibernate
 public class Owner {
     @Id // กำหนดให้เป็น Primary Key
     @GeneratedValue(strategy = GenerationType.AUTO) // สร้าง ID อัตโนมัติ
@@ -30,6 +34,7 @@ public class Owner {
     private String lastname;
 
      // เปลี่ยนเป็น EAGER loading และเพิ่ม fetch ให้ชัดเจน
+    @JsonIgnore // ละเว้นฟิลด์นี้ในกระบวนการ serialize
     @ManyToMany(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE},
         fetch = FetchType.EAGER
