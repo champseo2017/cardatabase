@@ -5,18 +5,20 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.packt.cardatabase.entities.Car;  // ควรมีบรรทัดนี้
-
+@RepositoryRestResource // ระบุว่าเป็นแหล่งข้อมูล REST
 public interface CarRepository extends CrudRepository<Car, Long> {
 
      Optional<Car> findByRegisterNumber(String registerNumber);
 
      // ค้นหารถยนต์ตามยี่ห้อ
-     List<Car> findByBrand(String brand);
+     List<Car> findByBrand(@Param("brand") String brand);
 
      // ค้นหารถยนต์ตามสี
-     List<Car> findByColor(String color);
+     List<Car> findByColor(@Param("color") String color);
  
      // ค้นหารถยนต์ตามปีผลิต
      List<Car> findByYear(int year);
