@@ -14,10 +14,10 @@ public interface CarRepository extends CrudRepository<Car, Long> {
 
      Optional<Car> findByRegisterNumber(String registerNumber);
 
-     // ค้นหารถยนต์ตามยี่ห้อ
+     // ค้นหารถตามยี่ห้อ: GET http://localhost:8080/api/cars/search/findByBrand?brand=Toyota
      List<Car> findByBrand(@Param("brand") String brand);
 
-     // ค้นหารถยนต์ตามสี
+     // ค้นหารถตามสี: GET http://localhost:8080/api/cars/search/findByColor?color=Red
      List<Car> findByColor(@Param("color") String color);
  
      // ค้นหารถยนต์ตามปีผลิต
