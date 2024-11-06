@@ -12,7 +12,7 @@ public class CarController {
     @Autowired // ฉีด dependencies ของ CarRepository
     private CarRepository carRepository;
 
-    @GetMapping("/cars") // แมปคำขอที่เข้ามาที่ "/cars" มายังเมธอดนี้
+    @GetMapping("/api/cars") // แมปคำขอที่เข้ามาที่ "/cars" มายังเมธอดนี้
     public Iterable<Car> getCars() {
         // ดึงข้อมูลรถยนต์และส่งกลับ
         return carRepository.findAll(); // สมมติว่ามี carRepository สำหรับดึงข้อมูล
