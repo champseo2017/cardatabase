@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.packt.cardatabase.domain.CarRepository;
 import com.packt.cardatabase.domain.OwnerRepository;
+import com.packt.cardatabase.domain.UserRepository;
 import com.packt.cardatabase.entities.Car;
 import com.packt.cardatabase.entities.Owner;
+import com.packt.cardatabase.entities.User;
 
 @SpringBootApplication
 public class CardatabaseApplication implements CommandLineRunner {
@@ -25,6 +27,9 @@ public class CardatabaseApplication implements CommandLineRunner {
 
     @Autowired
     private OwnerRepository ownerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(CardatabaseApplication.class, args);
@@ -126,6 +131,13 @@ public class CardatabaseApplication implements CommandLineRunner {
                         "ไม่มีเจ้าของ"
                 ));
             });
+
+            // เพิ่มผู้ใช้ระบบพร้อมรหัสผ่านที่เข้ารหัสแล้ว
+            logger.info("=== เพิ่มผู้ใช้ระบบ ===");
+            userRepository.save(new User("user",
+                "$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue",
+                "USER"));
+            logger.info("เพิ่มผู้ใช้เรียบร้อยแล้ว");
 
         } catch (Exception e) {
             logger.error("เกิดข้อผิดพลาด: ", e);
