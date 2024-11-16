@@ -134,10 +134,24 @@ public class CardatabaseApplication implements CommandLineRunner {
 
             // เพิ่มผู้ใช้ระบบพร้อมรหัสผ่านที่เข้ารหัสแล้ว
             logger.info("=== เพิ่มผู้ใช้ระบบ ===");
-            userRepository.save(new User("user",
-                "$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue",
-                "USER"));
-            logger.info("เพิ่มผู้ใช้เรียบร้อยแล้ว");
+            if (!userRepository.existsByUsername("user")) {  // Add this check
+                userRepository.save(new User("user",
+                    "$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue",
+                    "USER"));
+                logger.info("เพิ่มผู้ใช้เรียบร้อยแล้ว");
+            } else {
+                logger.info("ผู้ใช้มีอยู่แล้วในระบบ");
+            }
+
+            // เพิ่มผู้ใช้ admin หลังจากเช็ค user ปกติ
+            if (!userRepository.existsByUsername("admin")) {
+                userRepository.save(new User("admin",
+                    "$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW",
+                    "ADMIN"));
+                logger.info("เพิ่มผู้ดูแลระบบเรียบร้อยแล้ว");
+            } else {
+                logger.info("ผู้ดูแลระบบมีอยู่แล้ว");
+            }
 
         } catch (Exception e) {
             logger.error("เกิดข้อผิดพลาด: ", e);
