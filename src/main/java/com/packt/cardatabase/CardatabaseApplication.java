@@ -11,12 +11,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.packt.cardatabase.domain.CarRepository;
-import com.packt.cardatabase.domain.OwnerRepository;
-import com.packt.cardatabase.domain.UserRepository;
 import com.packt.cardatabase.entities.Car;
 import com.packt.cardatabase.entities.Owner;
 import com.packt.cardatabase.entities.User;
+import com.packt.cardatabase.repositories.CarRepository;
+import com.packt.cardatabase.repositories.OwnerRepository;
+import com.packt.cardatabase.repositories.UserRepository;
 
 @SpringBootApplication
 public class CardatabaseApplication implements CommandLineRunner {

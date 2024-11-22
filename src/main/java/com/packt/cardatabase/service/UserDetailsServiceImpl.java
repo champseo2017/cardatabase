@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.packt.cardatabase.domain.UserRepository;
 import com.packt.cardatabase.entities.User;
+import com.packt.cardatabase.repositories.UserRepository;
 
 @Service // บอกว่าคลาสนี้เป็น Service ของ Spring
 public class UserDetailsServiceImpl implements UserDetailsService {
