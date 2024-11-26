@@ -22,6 +22,9 @@ import com.packt.cardatabase.service.UserDetailsServiceImpl;
 public class SecurityConfig {
 
     @Autowired
+    private AuthEntryPoint exceptionHandler;
+
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
@@ -48,10 +51,13 @@ public class SecurityConfig {
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.POST, "/login").permitAll()  // ระบุ HTTP method ให้ชัดเจน
+            .requestMatchers(HttpMethod.POST, "/login").permitAll() 
             .requestMatchers(HttpMethod.POST, "/signup").permitAll()
             .requestMatchers("/api/test").permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().authenticated() // ทุก request อื่น ๆ ต้องผ่านการยืนยันตัวตน
+        )
+        .exceptionHandling(exceptionHandling -> 
+            exceptionHandling.authenticationEntryPoint(exceptionHandler)
         )
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,9 +46,12 @@ public class LoginController {
                 .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Authorization")
                 .build();
                 
-        } catch (Exception e) {
-            // ถ้าล็อกอินไม่สำเร็จ ส่งสถานะ 401 Unauthorized
-            return ResponseEntity.status(401).build();
-        }
+            } catch (AuthenticationException authException) {
+                // ถ้าล็อกอินไม่สำเร็จ ส่งไปที่ AuthEntryPoint
+                throw authException; // โยน AuthenticationException เพื่อให้เข้าไปที่ commence
+            } catch (Exception e) {
+                // จัดการข้อผิดพลาดอื่น ๆ ที่อาจเกิดขึ้น
+                return ResponseEntity.status(500).build(); // ส่งสถานะ 500 Internal Server Error
+            }
     }
 }
