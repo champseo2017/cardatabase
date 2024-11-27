@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity // ระบุว่าคลาสนี้เป็น entity ที่ใช้จัดเก็บข้อมูลในฐานข้อมูล
+@Table(name = "users") 
 public class User {
 
     @Id
