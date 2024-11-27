@@ -56,6 +56,7 @@ public class CarRestTest {
      @Test
      @DisplayName("Should login successfully with valid credentials")
     public void shouldLoginSuccessfullyWithValidCredentials() throws Exception {
+        logger.info("Running test: Should login successfully with valid credentials");
         // ทดสอบการล็อกอินด้วยข้อมูลที่ถูกต้อง
         mockMvc.perform(post("/login")
             .content("{\"username\":\"admin\",\"password\":\"admin\"}")  // ส่งข้อมูลล็อกอิน
