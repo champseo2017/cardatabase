@@ -58,7 +58,7 @@ public class CardatabaseApplication implements CommandLineRunner {
             
             // สร้างความสัมพันธ์ใหม่
             for (Owner owner : owners) {
-                // ตรวจสอบว่าความสัมพันธ์มีอยู่แล้วหรือไม่
+                // รวจสอบว่าความสัมพันธ์มีอยู่แล้วหรือไม่
                 if (!savedCar.getOwners().contains(owner)) {
                     savedCar.getOwners().add(owner);
                     owner.getCars().add(savedCar);
@@ -83,74 +83,43 @@ public class CardatabaseApplication implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         try {
-            // ล้างข้อมูลเก่า
-            logger.info("เริ่มล้างข้อมูลเก่า...");
-            carRepository.deleteAll();
-            ownerRepository.deleteAll();
-            logger.info("ล้างข้อมูลเก่าเสร็จสิ้น");
-
-            // สร้างเจ้าของรถ
-            Owner owner1 = new Owner("จอห์น", "จอห์นสัน");
-            Owner owner2 = new Owner("มารี", "โรบินสัน");
-            
-            owner1 = ownerRepository.save(owner1);
-            owner2 = ownerRepository.save(owner2);
-            
-            logger.info("สร้างเจ้าของรถเสร็จสิ้น");
-
-            // สร้างรถและความสัมพันธ์
-            createCarWithOwners("ADF-1121",
-                new Car("Ford", "Mustang", "Red", "ADF-1121", 2021, 59000),
-                Set.of(owner1));
-
-            createCarWithOwners("SSJ-3002",
-                new Car("Nissan", "Leaf", "White", "SSJ-3002", 2019, 29000),
-                Set.of(owner1, owner2));
-
-            createCarWithOwners("KKO-0212",
-                new Car("Toyota", "Prius", "Silver", "KKO-0212", 2020, 39000),
-                Set.of(owner2));
-
-            // แสดงข้อมูลทั้งหมดเพื่อตรวจสอบ
-            logger.info("=== ข้อมูลรถยนต์ทั้งหมด ===");
-            carRepository.findAll().forEach(c -> {
-                StringBuilder ownerInfo = new StringBuilder();
-                c.getOwners().forEach(o -> 
-                    ownerInfo.append(o.getFirstname())
-                            .append(" ")
-                            .append(o.getLastname())
-                            .append(", ")
-                );
-                
-                logger.info(String.format("รถ: %s %s (%s) - เจ้าของ: %s",
-                    c.getBrand(),
-                    c.getModel(),
-                    c.getRegisterNumber(),
-                    ownerInfo.length() > 0 ? 
-                        ownerInfo.substring(0, ownerInfo.length() - 2) : 
-                        "ไม่มีเจ้าของ"
-                ));
-            });
-
-            // เพิ่มผู้ใช้ระบบพร้อมรหัสผ่านที่เข้ารหัสแล้ว
-            logger.info("=== เพิ่มผู้ใช้ระบบ ===");
-            if (!userRepository.existsByUsername("user")) {  // Add this check
+            // ลรวจสอบว่ามีผู้ใช้ในระบบหรือยัง
+            if (userRepository.count() == 0) {
+                logger.info("=== เพิ่มผู้ใช้ระบบ ===");
                 userRepository.save(new User("user",
                     "$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue",
                     "USER"));
-                logger.info("เพิ่มผู้ใช้เรียบร้อยแล้ว");
-            } else {
-                logger.info("ผู้ใช้มีอยู่แล้วในระบบ");
-            }
-
-            // เพิ่มผู้ใช้ admin หลังจากเช็ค user ปกติ
-            if (!userRepository.existsByUsername("admin")) {
                 userRepository.save(new User("admin",
                     "$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW",
                     "ADMIN"));
-                logger.info("เพิ่มผู้ดูแลระบบเรียบร้อยแล้ว");
-            } else {
-                logger.info("ผู้ดูแลระบบมีอยู่แล้ว");
+                logger.info("เพิ่มผู้ใช้ระบบเรียบร้อยแล้ว");
+            }
+
+            // ตรวจสอบว่ามีข้อมูลรถในระบบหรือยัง
+            if (carRepository.count() == 0) {
+                logger.info("=== เพิ่มข้อมูลรถและเจ้าของ ===");
+                
+                // สร้างเจ้าของรถ
+                Owner owner1 = new Owner("จอห์น", "จอห์นสัน");
+                Owner owner2 = new Owner("มารี", "โรบินสัน");
+                
+                owner1 = ownerRepository.save(owner1);
+                owner2 = ownerRepository.save(owner2);
+                
+                // สร้างรถและความสัมพันธ์
+                createCarWithOwners("ADF-1121",
+                    new Car("Ford", "Mustang", "Red", "ADF-1121", 2021, 59000),
+                    Set.of(owner1));
+
+                createCarWithOwners("SSJ-3002",
+                    new Car("Nissan", "Leaf", "White", "SSJ-3002", 2019, 29000),
+                    Set.of(owner1, owner2));
+
+                createCarWithOwners("KKO-0212",
+                    new Car("Toyota", "Prius", "Silver", "KKO-0212", 2020, 39000),
+                    Set.of(owner2));
+
+                logger.info("เพิ่มข้อมูลรถและเจ้าของเรียบร้อยแล้ว");
             }
 
         } catch (Exception e) {
